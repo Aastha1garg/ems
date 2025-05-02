@@ -10,6 +10,7 @@ import AddDepartment from '../components/department/AddDepartment';
 import EditDepartment from '../components/department/EditDepartment';
 import EmployeeList from '../components/employee/EmployeeList';
 import AddEmployee from '../components/employee/AddEmployee';
+import EmployeeSalary from '../components/employee/EmployeeSalary';
 
 import AdminSalaryHistory from '../components/salary/AdminSalaryHistory';
 import ManageLeaves from '../components/leave/ManageLeaves';
@@ -43,26 +44,22 @@ const AdminDashboard = ({ socket }) => {
     rejected: 0,
   });
 
-  // Fetch employee count
   useEffect(() => {
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     setEmployeeCount(employees.length);
   }, []);
 
-  // Fetch department count
   useEffect(() => {
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     setDepartmentCount(departments.length);
   }, []);
 
-  // Fetch total salary
   useEffect(() => {
     const salaryData = JSON.parse(localStorage.getItem('salaryData')) || [];
     const total = salaryData.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0);
     setMonthlyPay(total);
   }, []);
 
-  // Fetch leave stats
   useEffect(() => {
     const leaves = JSON.parse(localStorage.getItem('leaves')) || [];
 
@@ -86,7 +83,6 @@ const AdminDashboard = ({ socket }) => {
     leaveRejected: leaveStats.rejected,
   };
 
-  // Handle socket
   useEffect(() => {
     if (socket) {
       socket.on('message', (msg) => {
@@ -114,7 +110,6 @@ const AdminDashboard = ({ socket }) => {
   return (
     <div className="flex h-screen">
       <AdminSidebar />
-
       <div className="flex-1 flex flex-col">
         <Navbar />
         <main className="flex-1 p-6 bg-gray-100 overflow-y-auto">
@@ -178,7 +173,7 @@ const AdminDashboard = ({ socket }) => {
             <Route path="employees/add-new-employee" element={<AddEmployee setEmployeeCount={setEmployeeCount} />} />
             <Route path="employees/edit/:id" element={<AddEmployee setEmployeeCount={setEmployeeCount} />} />
             <Route path="employees/view/:id" element={<div>Employee View Page (To be implemented)</div>} />
-            <Route path="employees/salary/:id" element={<div>Employee Salary Page (To be implemented)</div>} />
+            <Route path="employees/salary/:id" element={<EmployeeSalary />} /> {/* ✅ Connected properly */}
             <Route path="employees/leave/:id" element={<div>Employee Leave Page (To be implemented)</div>} />
 
             {/* Salary History */}
@@ -187,7 +182,7 @@ const AdminDashboard = ({ socket }) => {
             {/* Leave Page */}
             <Route path="leaves" element={<ManageLeaves />} />
 
-            {/* ✅ Settings Page */}
+            {/* Settings Page */}
             <Route path="settings" element={<Settings />} />
           </Routes>
         </main>

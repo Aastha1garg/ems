@@ -6,7 +6,6 @@ const ManageLeaves = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Sample static data or get from localStorage
     const data = JSON.parse(localStorage.getItem("leaves")) || [
       {
         id: 1,
@@ -15,7 +14,7 @@ const ManageLeaves = () => {
         leaveType: "Sick Leave",
         department: "Logistic",
         days: 4,
-        status: "Approved",
+        status: "Pending",
       },
       {
         id: 2,
@@ -30,10 +29,16 @@ const ManageLeaves = () => {
     setLeaves(data);
   }, []);
 
+  const handleStatusChange = (id, newStatus) => {
+    const updatedLeaves = leaves.map((leave) =>
+      leave.id === id ? { ...leave, status: newStatus } : leave
+    );
+    setLeaves(updatedLeaves);
+    localStorage.setItem("leaves", JSON.stringify(updatedLeaves)); // Save changes
+  };
+
   const filteredLeaves = leaves
-    .filter((leave) =>
-      filter === "All" ? true : leave.status === filter
-    )
+    .filter((leave) => (filter === "All" ? true : leave.status === filter))
     .filter((leave) =>
       leave.empId.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -75,7 +80,7 @@ const ManageLeaves = () => {
               <th className="border px-4 py-2">Department</th>
               <th className="border px-4 py-2">Days</th>
               <th className="border px-4 py-2">Status</th>
-              <th className="border px-4 py-2">Action</th>
+              <th className="border px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -88,9 +93,18 @@ const ManageLeaves = () => {
                 <td className="border px-4 py-2">{leave.department}</td>
                 <td className="border px-4 py-2">{leave.days}</td>
                 <td className="border px-4 py-2">{leave.status}</td>
-                <td className="border px-4 py-2">
-                  <button className="bg-teal-500 text-white px-3 py-1 rounded">
-                    View
+                <td className="border px-4 py-2 space-x-2">
+                  <button
+                    className="bg-green-500 text-white px-2 py-1 rounded"
+                    onClick={() => handleStatusChange(leave.id, "Approved")}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    onClick={() => handleStatusChange(leave.id, "Rejected")}
+                  >
+                    Reject
                   </button>
                 </td>
               </tr>
