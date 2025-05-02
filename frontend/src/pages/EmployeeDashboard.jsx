@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/authContext';
 import { useNavigate } from 'react-router-dom';
-
+ //some 
 const EmployeeDashboard = ({ socket }) => {
   const { user, logout } = useAuthContext();
   const navigate = useNavigate();
